@@ -13,4 +13,7 @@
     <string name="birthdate_hint">День рождения</string>
     <string name="back_to_login">Вернуться и</string>
     <string name="sigin_text">войти</string>
+    <string name="success_register_text">Успешная регистрация</string>
+    <string name="failed_register_text">Регистрация невозможна (с таким именем уже есть пользователь)</string>
+    <string name="wrong_login_text">Неправильное имя или пароль</string>
 </resources>

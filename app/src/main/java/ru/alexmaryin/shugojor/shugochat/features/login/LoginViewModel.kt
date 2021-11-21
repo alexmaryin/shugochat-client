@@ -1,6 +1,5 @@
 package ru.alexmaryin.shugojor.shugochat.features.login
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -9,18 +8,21 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.alexmaryin.shugojor.shugochat.api.ShugochatApi
+import ru.alexmaryin.shugojor.shugochat.navigation.NavTarget
+import ru.alexmaryin.shugojor.shugochat.navigation.Navigator
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val api: ShugochatApi,
+    private val navigator: Navigator
 ) : ViewModel(), LoginEventHandler {
 
     private val _state = mutableStateOf(LoginScreenState())
     val state: State<LoginScreenState> get() = _state
 
     override fun onEvent(event: LoginEvent) {
-        when(event) {
+        when (event) {
 
             is LoginEvent.SignIn -> viewModelScope.launch(Dispatchers.IO) {
                 _state.value = state.value.copy(processing = true)
@@ -32,9 +34,9 @@ class LoginViewModel @Inject constructor(
                 )
             }
 
-            LoginEvent.SignUp -> {
-                _state.value = state.value.copy(register = true)
-                Log.d("LOGIN", "Invoke register screen")
+            LoginEvent.SignUp -> viewModelScope.launch {
+                _state.value = LoginScreenState()
+                navigator.navigateTo(NavTarget.Register)
             }
         }
     }

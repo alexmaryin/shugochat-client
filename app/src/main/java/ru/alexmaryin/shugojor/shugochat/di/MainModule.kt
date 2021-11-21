@@ -9,6 +9,7 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
+import ru.alexmaryin.shugojor.shugochat.navigation.Navigator
 import ru.alexmaryin.shugojor.shugochat.api.ShugochatApi
 import ru.alexmaryin.shugojor.shugochat.api.ShugochatApiImpl
 import javax.inject.Singleton
@@ -29,4 +30,8 @@ object MainModule {
     @Provides
     @Singleton
     fun provideApi(): ShugochatApi = ShugochatApiImpl(apiClient)
+
+    @Provides
+    @Singleton
+    fun provideNavigator(): Navigator = Navigator()
 }

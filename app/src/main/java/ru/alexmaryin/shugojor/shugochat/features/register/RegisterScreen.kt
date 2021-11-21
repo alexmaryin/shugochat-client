@@ -14,8 +14,10 @@ import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -23,7 +25,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ru.alexmaryin.shugojor.shugochat.R
 import ru.alexmaryin.shugojor.shugochat.api.model.User
-import ru.alexmaryin.shugojor.shugochat.api.model.UserRole
 import ru.alexmaryin.shugojor.shugochat.ui.components.CaptionUnderlined
 import ru.alexmaryin.shugojor.shugochat.ui.components.MainText
 import ru.alexmaryin.shugojor.shugochat.ui.components.ShugoTextField
@@ -31,9 +32,11 @@ import ru.alexmaryin.shugojor.shugochat.ui.theme.ShugochatTheme
 import ru.alexmaryin.shugojor.shugochat.ui.theme.onPrimary
 import ru.alexmaryin.shugojor.shugochat.ui.theme.primary
 import ru.alexmaryin.shugojor.shugochat.ui.theme.textSecondary
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RegisterScreen(
     eventHandler: RegisterEventHandler
@@ -45,6 +48,7 @@ fun RegisterScreen(
     val canRegister by remember { mutableStateOf({nameInput.isNotEmpty() && passwordInput.isNotEmpty()}) }
 
     val scrollState = rememberScrollState()
+    val keyboard = LocalSoftwareKeyboardController.current
 
     Column(
         modifier = Modifier
@@ -64,7 +68,6 @@ fun RegisterScreen(
                 value = nameInput,
                 onChange = { nameInput = it },
                 hint = stringResource(R.string.username_hint),
-                isPassword = false,
                 isMandatory = true
             )
 
@@ -72,14 +75,12 @@ fun RegisterScreen(
                 value = emailInput,
                 onChange = { emailInput = it },
                 hint = stringResource(R.string.email_hint),
-                isPassword = false
             )
 
             ShugoTextField(
                 value = birthdateInput,
                 onChange = { birthdateInput = it },
                 hint = stringResource(R.string.birthdate_hint),
-                isPassword = false
             )
 
             ShugoTextField(
@@ -92,6 +93,7 @@ fun RegisterScreen(
 
             IconButton(
                 onClick = {
+                    keyboard?.hide()
                     eventHandler.onEvent(
                         RegisterEvent.Register(
                             User(
@@ -99,7 +101,6 @@ fun RegisterScreen(
                                 email = emailInput,
                                 password = passwordInput,
                                 birthdate = parseBirthdate(birthdateInput),
-                                role = UserRole.REGULAR
                             )
                         )
                     )
@@ -113,7 +114,7 @@ fun RegisterScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.PowerSettingsNew,
-                    contentDescription = stringResource(R.string.login_caption),
+                    contentDescription = stringResource(R.string.register_caption),
                     modifier = Modifier.fillMaxSize(),
                     tint = if(canRegister()) onPrimary else textSecondary
                 )
@@ -140,10 +141,7 @@ fun RegisterPreview(navController: NavController = rememberNavController()) {
     ShugochatTheme {
         RegisterScreen {
             when (it) {
-                is RegisterEvent.Register -> Log.d(
-                    "LOGIN",
-                    "Register new user: ${it.user}"
-                )
+                is RegisterEvent.Register -> Log.d("LOGIN","Register new user: ${it.user}")
                 RegisterEvent.BackToLogin -> navController.popBackStack()
             }
         }
@@ -152,6 +150,6 @@ fun RegisterPreview(navController: NavController = rememberNavController()) {
 
 fun parseBirthdate(input: String): Long? = try {
     SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(input)?.time
-} catch (e: IllegalArgumentException) {
+} catch (e: Exception) {
     null
 }

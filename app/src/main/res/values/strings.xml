@@ -12,4 +12,7 @@
     <string name="birthdate_hint">Birthdate</string>
     <string name="back_to_login">Back to</string>
     <string name="sigin_text">sign in</string>
+    <string name="wrong_login_text">Wrong user name or password</string>
+    <string name="success_register_text">Successful registration</string>
+    <string name="failed_register_text">Registration failed (user name already registered)</string>
 </resources>
