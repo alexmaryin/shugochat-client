@@ -144,7 +144,7 @@ fun RegisterPreview(navController: NavController = rememberNavController()) {
                     "LOGIN",
                     "Register new user: ${it.user}"
                 )
-                RegisterEvent.BackToLogin -> navController.navigate("login")
+                RegisterEvent.BackToLogin -> navController.popBackStack()
             }
         }
     }

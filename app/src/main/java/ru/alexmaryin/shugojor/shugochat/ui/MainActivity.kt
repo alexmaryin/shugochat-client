@@ -11,7 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import ru.alexmaryin.shugojor.shugochat.features.login.LoginPreview
+import ru.alexmaryin.shugojor.shugochat.features.login.Login
 import ru.alexmaryin.shugojor.shugochat.features.register.RegisterPreview
 import ru.alexmaryin.shugojor.shugochat.ui.theme.ShugochatTheme
 
@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = "login") {
-                        composable("login") { LoginPreview(navController) }
+                        composable("login") { Login(navController) }
                         composable("register") { RegisterPreview(navController) }
                     }
                 }

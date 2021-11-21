@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ru.alexmaryin.shugojor.shugochat.R
@@ -33,13 +34,11 @@ import ru.alexmaryin.shugojor.shugochat.ui.theme.textSecondary
 
 @Composable
 fun LoginScreen(
-    name: String,
-    password: String,
     eventHandler: LoginEventHandler
 ) {
 
-    var nameInput by rememberSaveable { mutableStateOf(name) }
-    var passwordInput by rememberSaveable { mutableStateOf(password) }
+    var nameInput by rememberSaveable { mutableStateOf("") }
+    var passwordInput by rememberSaveable { mutableStateOf("") }
     val canLogin by remember { mutableStateOf({nameInput.isNotEmpty() && passwordInput.isNotEmpty()}) }
     val scrollState = rememberScrollState()
 
@@ -110,15 +109,26 @@ fun LoginScreen(
     }
 }
 
+@Composable
+fun Login(navController: NavController) {
+
+    val viewModel: LoginViewModel = hiltViewModel()
+
+    if (viewModel.state.value.register)
+        navController.navigate("register")
+
+    LoginScreen(eventHandler = viewModel)
+}
+
 @Preview
 @Composable
 fun LoginPreview(navController: NavController = rememberNavController()) {
     ShugochatTheme {
-        LoginScreen(name = "", password = "") {
+        LoginScreen {
             when (it) {
                 is LoginEvent.SignIn -> Log.d(
                     "LOGIN",
-                    "Login ${it.credentials.username} with password ${it.credentials.password}"
+                    "Login ${it.credentials.name} with password ${it.credentials.password}"
                 )
                 LoginEvent.SignUp -> navController.navigate("register")
             }
