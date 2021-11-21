@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Шугочат</string>
+
+<!--    Экран входа-->
+    <string name="login_caption">Вход</string>
+    <string name="username_hint">Имя пользователя</string>
+    <string name="password_hint">Пароль</string>
+    <string name="not_register_text">Нет аккаунта?</string>
+    <string name="signup_text">Заведи!</string>
+    <string name="register_caption">Регистрация</string>
+    <string name="email_hint">Почта</string>
+    <string name="birthdate_hint">День рождения</string>
+    <string name="back_to_login">Вернуться и</string>
+    <string name="sigin_text">войти</string>
+</resources>

@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Shugochat</string>
+
+<!--    Login screen-->
+    <string name="login_caption">Login</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="not_register_text">Not register?</string>
+    <string name="signup_text">Sign up!</string>
+    <string name="register_caption">Register</string>
+    <string name="email_hint">E-mail</string>
+    <string name="birthdate_hint">Birthdate</string>
+    <string name="back_to_login">Back to</string>
+    <string name="sigin_text">sign in</string>
+</resources>
