@@ -24,7 +24,7 @@ class ShugochatApiImpl(
     private val client: HttpClient
 ) : ShugochatApi {
 
-    private var chatSession: WebSocketSession? = null
+    private var chatSession: DefaultWebSocketSession? = null
 
     override suspend fun login(credentials: Credentials): String? {
         return try {
