@@ -16,5 +16,6 @@ class Navigator {
 enum class NavTarget(val route: String) {
     Login("login"),
     Register("register"),
-    Back("")
+    Back(""),
+    Chat("chat")
 }

@@ -34,8 +34,8 @@ fun ShugoTextField(
     TextField(
         value = value,
         onValueChange = onChange,
-        placeholder = { hint?.let { Text(text = it, style = MaterialTheme.typography.body2) } },
-        textStyle = MaterialTheme.typography.body1,
+        placeholder = { hint?.let { Text(text = it, style = MaterialTheme.typography.subtitle2) } },
+        textStyle = MaterialTheme.typography.subtitle1,
         modifier = Modifier
             .fillMaxWidth()
             .padding(20.dp)

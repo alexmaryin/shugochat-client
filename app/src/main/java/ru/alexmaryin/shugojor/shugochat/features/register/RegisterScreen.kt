@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,7 +33,6 @@ import ru.alexmaryin.shugojor.shugochat.ui.theme.ShugochatTheme
 import ru.alexmaryin.shugojor.shugochat.ui.theme.onPrimary
 import ru.alexmaryin.shugojor.shugochat.ui.theme.primary
 import ru.alexmaryin.shugojor.shugochat.ui.theme.textSecondary
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -45,10 +45,13 @@ fun RegisterScreen(
     var passwordInput by rememberSaveable { mutableStateOf("") }
     var emailInput by rememberSaveable { mutableStateOf("") }
     var birthdateInput by rememberSaveable { mutableStateOf("") }
-    val canRegister by remember { mutableStateOf({nameInput.isNotEmpty() && passwordInput.isNotEmpty()}) }
+    val canRegister by remember { mutableStateOf({
+        nameInput.isNotEmpty() && passwordInput.isNotEmpty() && nameInput != "SYSTEM"
+    }) }
 
     val scrollState = rememberScrollState()
     val keyboard = LocalSoftwareKeyboardController.current
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -101,7 +104,8 @@ fun RegisterScreen(
                                 email = emailInput,
                                 password = passwordInput,
                                 birthdate = parseBirthdate(birthdateInput),
-                            )
+                            ),
+                            context
                         )
                     )
                 },

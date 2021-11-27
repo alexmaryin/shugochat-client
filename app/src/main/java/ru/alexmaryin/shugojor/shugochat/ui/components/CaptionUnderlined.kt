@@ -1,6 +1,5 @@
 package ru.alexmaryin.shugojor.shugochat.ui.components
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -9,16 +8,14 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.style.TextAlign
 import ru.alexmaryin.shugojor.shugochat.ui.theme.textUnderline
 
-
 @Composable
-fun CaptionUnderlined(text: String) {
+fun CaptionUnderlined(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text,
-        modifier = Modifier
-            .padding(20.dp)
+        modifier = modifier
             .drawBehind {
             drawLine(
                 color = textUnderline,
@@ -28,6 +25,7 @@ fun CaptionUnderlined(text: String) {
                 cap = StrokeCap.Round
             )
         },
-        style = MaterialTheme.typography.h1
+        style = MaterialTheme.typography.h1,
+        textAlign = TextAlign.Center
     )
 }

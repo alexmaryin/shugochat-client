@@ -15,11 +15,14 @@ fun Login() {
     val scaffoldState = rememberScaffoldState()
     val wrongText = stringResource(R.string.wrong_login_text)
 
-    if (viewModel.state.value.loginFail) LaunchedEffect(scaffoldState.snackbarHostState) {
+    if (viewModel.state.value.loginFail == true) LaunchedEffect(scaffoldState.snackbarHostState) {
          scaffoldState.snackbarHostState.showSnackbar(wrongText)
         }
 
     Scaffold(scaffoldState = scaffoldState) {
-        LoginScreen(eventHandler = viewModel)
+        LoginScreen(
+            isNotProcessing = viewModel.state.value.processing.not(),
+            eventHandler = viewModel
+        )
     }
 }

@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import ru.alexmaryin.shugojor.shugochat.features.chat.Chat
 import ru.alexmaryin.shugojor.shugochat.features.login.Login
 import ru.alexmaryin.shugojor.shugochat.features.register.Register
 
@@ -28,5 +29,6 @@ fun NavigationComponent(
     NavHost(navController = navController, startDestination = NavTarget.Login.route) {
         composable(NavTarget.Login.route) { Login() }
         composable(NavTarget.Register.route) { Register() }
+        composable(NavTarget.Chat.route) { Chat() }
     }
 }

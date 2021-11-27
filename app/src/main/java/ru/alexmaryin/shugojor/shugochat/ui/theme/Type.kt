@@ -29,16 +29,34 @@ val Typography = Typography(
         fontSize = 36.sp,
         color = textCaption
     ),
-    body1 = TextStyle(
+    subtitle1 = TextStyle(
         fontFamily = montserratFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 24.sp,
         color = textMain
     ),
-    body2 = TextStyle(
+    subtitle2 = TextStyle(
         fontFamily = montserratFontFamily,
         fontWeight = FontWeight.Light,
         fontSize = 24.sp,
+        color = textSecondary
+    ),
+    body1 = TextStyle(
+        fontFamily = montserratFontFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 18.sp,
+        color = textMain
+    ),
+    body2 = TextStyle(
+        fontFamily = montserratFontFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 18.sp,
+        color = textCaption
+    ),
+    overline = TextStyle(
+        fontFamily = montserratFontFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp,
         color = textSecondary
     ),
     button = TextStyle(
