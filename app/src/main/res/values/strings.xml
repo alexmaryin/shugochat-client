@@ -28,4 +28,5 @@
 <!--    Chat-->
     <string name="chat_caption">Chat</string>
     <string name="chat_field_hint">Enter something</string>
+    <string name="clear_chat">Clear chat</string>
 </resources>

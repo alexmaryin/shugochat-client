@@ -29,4 +29,5 @@
 <!--    Чат-->
     <string name="chat_caption">Чат</string>
     <string name="chat_field_hint">Напишите что-нибудь</string>
+    <string name="clear_chat">Удалить переписку</string>
 </resources>

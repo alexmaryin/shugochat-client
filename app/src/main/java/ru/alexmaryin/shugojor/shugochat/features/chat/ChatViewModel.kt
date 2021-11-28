@@ -76,14 +76,14 @@ class ChatViewModel @Inject constructor(
             when (event) {
                 is ChatEvent.OpenChat -> openChat(event.context)
 
-                is ChatEvent.CloseChat -> api.closeChat(requireNotNull(username))
+                ChatEvent.CloseChat -> api.closeChat(requireNotNull(username))
 
-                is ChatEvent.Back -> {
+                ChatEvent.Back -> {
                     api.closeChat(requireNotNull(username))
                     navigator.navigateTo(NavTarget.Back)
                 }
 
-                is ChatEvent.ClearChat -> {
+                ChatEvent.ClearChat -> {
                     messagesRepository.clear()
                     _state.value = ChatScreenState(user = username)
                 }
@@ -97,7 +97,9 @@ class ChatViewModel @Inject constructor(
                     api.send(message)
                 }
 
-                ChatEvent.SettingsEnter -> {}
+                ChatEvent.SettingsEnter -> _state.value = state.value.copy(menuVisible = true)
+
+                ChatEvent.SettingsClose -> _state.value = state.value.copy(menuVisible = false)
             }
         }
     }
