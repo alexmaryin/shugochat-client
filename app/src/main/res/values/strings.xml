@@ -7,12 +7,25 @@
     <string name="password_hint">Password</string>
     <string name="not_register_text">Not register?</string>
     <string name="signup_text">Sign up!</string>
+
+<!--    Register screen-->
     <string name="register_caption">Register</string>
     <string name="email_hint">E-mail</string>
     <string name="birthdate_hint">Birthdate</string>
     <string name="back_to_login">Back to</string>
     <string name="sigin_text">sign in</string>
-    <string name="wrong_login_text">Wrong user name or password</string>
     <string name="success_register_text">Successful registration</string>
     <string name="failed_register_text">Registration failed (user name already registered)</string>
+
+<!--    Errors-->
+    <string name="error_no_connection">Please check if internet connection is on</string>
+    <string name="error_unauthorized">Failed authorization</string>
+    <string name="error_client_side">Some problems with app. Please clean data and try again.</string>
+    <string name="error_server_unavailable">Server is down. Please try later.</string>
+    <string name="error_server_side">Unknown server problems. Try later.</string>
+    <string name="error_unknown">Service is off</string>
+
+<!--    Chat-->
+    <string name="chat_caption">Chat</string>
+    <string name="chat_field_hint">Enter something</string>
 </resources>

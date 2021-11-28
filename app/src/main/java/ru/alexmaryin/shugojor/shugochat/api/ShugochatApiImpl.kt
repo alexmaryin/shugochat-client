@@ -1,7 +1,6 @@
 package ru.alexmaryin.shugojor.shugochat.api
 
 import android.util.Log
-import androidx.fragment.app.FragmentTabHost
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.features.*
@@ -19,51 +18,58 @@ import kotlinx.serialization.json.Json
 import ru.alexmaryin.shugojor.shugochat.api.model.Credentials
 import ru.alexmaryin.shugojor.shugochat.api.model.MessageApi
 import ru.alexmaryin.shugojor.shugochat.api.model.User
+import ru.alexmaryin.shugojor.shugochat.data.result.ErrorType
+import ru.alexmaryin.shugojor.shugochat.data.result.Result
 
 class ShugochatApiImpl(
-    private val client: HttpClient
+    private val client: HttpClient,
+    private val networkStatus: NetworkStatus
 ) : ShugochatApi {
 
     private var chatSession: DefaultWebSocketSession? = null
 
-    override suspend fun login(credentials: Credentials): String? {
-        return try {
-            val response: HttpResponse = client.post(Endpoints.LOGIN) {
-                contentType(ContentType.Application.Json)
-                body = credentials
+    private suspend fun <R> requestFor(callback: suspend () -> R): Result<R> =
+        if (networkStatus.isConnected()) {
+            try {
+                Result.Success(callback())
+            } catch (e: ResponseException) {
+                when (e.response.status.value) {
+                    HttpStatusCode.RequestTimeout.value -> Result.Error(ErrorType.SERVER_UNAVAILABLE)
+                    HttpStatusCode.Unauthorized.value -> Result.Error(ErrorType.UNAUTHORIZED)
+                    in 402..499 -> Result.Error(ErrorType.OTHER_CLIENT_ERROR)
+                    in HttpStatusCode.InternalServerError.value..HttpStatusCode.GatewayTimeout.value -> Result.Error(ErrorType.SERVER_UNAVAILABLE)
+                    in 505..599 -> Result.Error(ErrorType.OTHER_SERVER_ERROR)
+                    else -> Result.Error(ErrorType.UNKNOWN, e.localizedMessage ?: e.message)
+                }
+            } catch (e: Exception) {
+                Result.Error(ErrorType.UNKNOWN, e.localizedMessage ?: e.message)
             }
-            response.receive<TokenResponse>().token
-        } catch (e: ClientRequestException) {
-            null
-        } catch (e: ServerResponseException) {
-            null
-        } catch (e: Exception) {
-            null
+        } else {
+            Result.Error(ErrorType.NO_CONNECTION)
         }
+
+    override suspend fun login(credentials: Credentials): Result<String> = requestFor {
+        val response: HttpResponse = client.post(Endpoints.LOGIN) {
+            contentType(ContentType.Application.Json)
+            body = credentials
+        }
+        response.receive<TokenResponse>().token
     }
 
-    override suspend fun register(user: User): Boolean {
-        return try {
-            val response: HttpResponse = client.post(Endpoints.REGISTER) {
-                contentType(ContentType.Application.Json)
-                body = user
-            }
-            return response.status == HttpStatusCode.OK
-        } catch (e: ClientRequestException) {
-            false
-        } catch (e: ServerResponseException) {
-            false
-        } catch (e: Exception) {
-            false
+    override suspend fun register(user: User): Result<Boolean> = requestFor {
+        val response: HttpResponse = client.post(Endpoints.REGISTER) {
+            contentType(ContentType.Application.Json)
+            body = user
         }
+        response.status == HttpStatusCode.OK
     }
 
-    override suspend fun openChat(token: String): Boolean {
+    override suspend fun openChat(token: String): Result<Boolean> = requestFor {
         chatSession = client.webSocketSession {
             url(Endpoints.CHAT)
             header(HttpHeaders.Authorization, "Bearer $token")
         }
-        return chatSession?.isActive ?: false
+        chatSession?.isActive ?: false
     }
 
     override suspend fun observeIncoming(): Flow<MessageApi> =

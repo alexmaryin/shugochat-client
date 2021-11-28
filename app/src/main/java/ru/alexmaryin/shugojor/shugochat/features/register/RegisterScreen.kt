@@ -4,19 +4,13 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -28,26 +22,27 @@ import ru.alexmaryin.shugojor.shugochat.R
 import ru.alexmaryin.shugojor.shugochat.api.model.User
 import ru.alexmaryin.shugojor.shugochat.ui.components.CaptionUnderlined
 import ru.alexmaryin.shugojor.shugochat.ui.components.MainText
+import ru.alexmaryin.shugojor.shugochat.ui.components.PowerButton
 import ru.alexmaryin.shugojor.shugochat.ui.components.ShugoTextField
 import ru.alexmaryin.shugojor.shugochat.ui.theme.ShugochatTheme
-import ru.alexmaryin.shugojor.shugochat.ui.theme.onPrimary
-import ru.alexmaryin.shugojor.shugochat.ui.theme.primary
-import ru.alexmaryin.shugojor.shugochat.ui.theme.textSecondary
 import java.text.SimpleDateFormat
 import java.util.*
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RegisterScreen(
+    isProcessing: Boolean,
     eventHandler: RegisterEventHandler
 ) {
     var nameInput by rememberSaveable { mutableStateOf("") }
     var passwordInput by rememberSaveable { mutableStateOf("") }
     var emailInput by rememberSaveable { mutableStateOf("") }
     var birthdateInput by rememberSaveable { mutableStateOf("") }
-    val canRegister by remember { mutableStateOf({
-        nameInput.isNotEmpty() && passwordInput.isNotEmpty() && nameInput != "SYSTEM"
-    }) }
+    val canRegister by remember {
+        mutableStateOf({
+            nameInput.isNotEmpty() && passwordInput.isNotEmpty() && nameInput != "SYSTEM" && isProcessing.not()
+        })
+    }
 
     val scrollState = rememberScrollState()
     val keyboard = LocalSoftwareKeyboardController.current
@@ -60,7 +55,8 @@ fun RegisterScreen(
     ) {
 
         Column(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
                 .verticalScroll(state = scrollState),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -94,33 +90,22 @@ fun RegisterScreen(
                 isMandatory = true
             )
 
-            IconButton(
-                onClick = {
-                    keyboard?.hide()
-                    eventHandler.onEvent(
-                        RegisterEvent.Register(
-                            User(
-                                name = nameInput,
-                                email = emailInput,
-                                password = passwordInput,
-                                birthdate = parseBirthdate(birthdateInput),
-                            ),
-                            context
-                        )
-                    )
-                },
-                modifier = Modifier
-                    .padding(20.dp)
-                    .size(100.dp)
-                    .shadow(10.dp, RoundedCornerShape(50), true)
-                    .background(color = primary),
-                enabled = canRegister()
+            PowerButton(
+                isEnabled = canRegister(),
+                isAnimated = isProcessing,
+                contentDescription = stringResource(R.string.register_caption)
             ) {
-                Icon(
-                    imageVector = Icons.Default.PowerSettingsNew,
-                    contentDescription = stringResource(R.string.register_caption),
-                    modifier = Modifier.fillMaxSize(),
-                    tint = if(canRegister()) onPrimary else textSecondary
+                keyboard?.hide()
+                eventHandler.onEvent(
+                    RegisterEvent.Register(
+                        User(
+                            name = nameInput,
+                            email = emailInput,
+                            password = passwordInput,
+                            birthdate = parseBirthdate(birthdateInput),
+                        ),
+                        context
+                    )
                 )
             }
         }
@@ -143,9 +128,9 @@ fun RegisterScreen(
 @Composable
 fun RegisterPreview(navController: NavController = rememberNavController()) {
     ShugochatTheme {
-        RegisterScreen {
+        RegisterScreen(true) {
             when (it) {
-                is RegisterEvent.Register -> Log.d("LOGIN","Register new user: ${it.user}")
+                is RegisterEvent.Register -> Log.d("LOGIN", "Register new user: ${it.user}")
                 RegisterEvent.BackToLogin -> navController.popBackStack()
             }
         }

@@ -8,6 +8,8 @@
     <string name="password_hint">Пароль</string>
     <string name="not_register_text">Нет аккаунта?</string>
     <string name="signup_text">Заведи!</string>
+
+<!--    Экран регистрацмм-->
     <string name="register_caption">Регистрация</string>
     <string name="email_hint">Почта</string>
     <string name="birthdate_hint">День рождения</string>
@@ -15,5 +17,16 @@
     <string name="sigin_text">войти</string>
     <string name="success_register_text">Успешная регистрация</string>
     <string name="failed_register_text">Регистрация невозможна (с таким именем уже есть пользователь)</string>
-    <string name="wrong_login_text">Неправильное имя или пароль</string>
+
+<!--    Ошибки-->
+    <string name="error_no_connection">Пожалуйста, проверьте включен ли интернет.</string>
+    <string name="error_unauthorized">Ошибка авторизации, проверьте имя и пароль.</string>
+    <string name="error_client_side">Ошибка приложения. Удалите данные приложения и попробуйте снова.</string>
+    <string name="error_server_unavailable">Сервер недоступен. Попробуйте позже.</string>
+    <string name="error_server_side">С серверов проблемы. Попробуйте позже.</string>
+    <string name="error_unknown">Сервис не работает</string>
+
+<!--    Чат-->
+    <string name="chat_caption">Чат</string>
+    <string name="chat_field_hint">Напишите что-нибудь</string>
 </resources>

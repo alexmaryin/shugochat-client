@@ -4,26 +4,26 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import ru.alexmaryin.shugojor.shugochat.R
+import ru.alexmaryin.shugojor.shugochat.ui.components.errorLocalizedString
 
 @Composable
 fun Register() {
     val viewModel: RegisterViewModel = hiltViewModel()
     val scaffoldState = rememberScaffoldState()
-    val successText = stringResource(R.string.success_register_text)
-    val failedText = stringResource(R.string.failed_register_text)
+    val context = LocalContext.current
 
-    viewModel.state.value.success?.let { success ->
-        LaunchedEffect(scaffoldState.snackbarHostState) {
-            scaffoldState.snackbarHostState.showSnackbar(
-                message = if(success) successText else failedText
-            )
+    viewModel.state.value.registerError?.let { error ->
+        LaunchedEffect(key1 = scaffoldState) {
+            scaffoldState.snackbarHostState.showSnackbar(errorLocalizedString(error, context))
         }
     }
 
     Scaffold(scaffoldState = scaffoldState) {
-        RegisterScreen(eventHandler = viewModel)
+        RegisterScreen(
+            isProcessing = viewModel.state.value.processing,
+            eventHandler = viewModel
+        )
     }
 }

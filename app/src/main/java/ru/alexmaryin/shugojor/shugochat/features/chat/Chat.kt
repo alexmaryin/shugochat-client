@@ -7,14 +7,18 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import ru.alexmaryin.shugojor.shugochat.R
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import ru.alexmaryin.shugojor.shugochat.ui.components.CaptionUnderlined
+import ru.alexmaryin.shugojor.shugochat.ui.components.errorLocalizedString
 import ru.alexmaryin.shugojor.shugochat.ui.theme.darkBackground
 
 @Composable
@@ -38,11 +42,17 @@ fun Chat() {
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
+    viewModel.state.value.chatError?.let {
+        LaunchedEffect(key1 = scaffoldState) {
+            scaffoldState.snackbarHostState.showSnackbar(errorLocalizedString(it, context))
+        }
+    }
+
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
             TopAppBar(
-                title = { CaptionUnderlined(text = "Chat") },
+                title = { CaptionUnderlined(text = stringResource(R.string.chat_caption)) },
                 navigationIcon = {
                     IconButton(onClick = { viewModel.onEvent(ChatEvent.Back) }) {
                         Icon(

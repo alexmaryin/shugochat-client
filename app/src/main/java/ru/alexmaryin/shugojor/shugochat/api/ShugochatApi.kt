@@ -4,28 +4,29 @@ import kotlinx.coroutines.flow.Flow
 import ru.alexmaryin.shugojor.shugochat.api.model.Credentials
 import ru.alexmaryin.shugojor.shugochat.api.model.MessageApi
 import ru.alexmaryin.shugojor.shugochat.api.model.User
+import ru.alexmaryin.shugojor.shugochat.data.result.Result
 
 interface ShugochatApi {
     /**
     * Try to login on server.
     * @param credentials [Credentials] data class with username and password as strings
-    * @return string with issued JWT token if login is success or null if fails
+    * @return [Result.Success] with [String] with issued JWT token if login is success or [Result.Error] if fails
      */
-    suspend fun login(credentials: Credentials): String?
+    suspend fun login(credentials: Credentials): Result<String>
 
     /**
      * Try to register a new user
      * @param user [User] data class with user details (name, email, password, etc)
-     * @return True if register is success or False if register is failed
+     * @return [Result.Success] with True if register is success or False if register is failed
      */
-    suspend fun register(user: User): Boolean
+    suspend fun register(user: User): Result<Boolean>
 
     /**
      * Try to open webSocket session for chat
      * @param token [String] JWT token for authorization
-     * @return true if chat session opened successfully
+     * @return [Result.Success] with True if chat session opened successfully
      */
-    suspend fun openChat(token: String): Boolean
+    suspend fun openChat(token: String): Result<Boolean>
 
     /**
      * Sends a new message to the chat

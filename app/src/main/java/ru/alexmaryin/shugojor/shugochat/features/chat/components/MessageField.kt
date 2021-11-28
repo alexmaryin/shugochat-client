@@ -13,7 +13,9 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import ru.alexmaryin.shugojor.shugochat.R
 import ru.alexmaryin.shugojor.shugochat.ui.theme.activeSurface
 import ru.alexmaryin.shugojor.shugochat.ui.theme.surface
 
@@ -38,7 +40,7 @@ fun MessageField(send: (String) -> Unit) {
         ),
         placeholder = {
             Text(
-                text = "Enter something",
+                text = stringResource(R.string.chat_field_hint),
                 modifier = Modifier.alpha(0.7f),
                 style = MaterialTheme.typography.body1,
             )

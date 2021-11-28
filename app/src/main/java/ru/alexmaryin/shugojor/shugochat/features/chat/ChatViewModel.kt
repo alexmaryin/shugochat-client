@@ -15,6 +15,8 @@ import ru.alexmaryin.shugojor.shugochat.api.ShugochatApi
 import ru.alexmaryin.shugojor.shugochat.api.model.MessageApi
 import ru.alexmaryin.shugojor.shugochat.api.model.toDto
 import ru.alexmaryin.shugojor.shugochat.data.messages.repository.MessagesRepository
+import ru.alexmaryin.shugojor.shugochat.data.result.forError
+import ru.alexmaryin.shugojor.shugochat.data.result.forSuccess
 import ru.alexmaryin.shugojor.shugochat.dataStore
 import ru.alexmaryin.shugojor.shugochat.di.ChatSettings
 import ru.alexmaryin.shugojor.shugochat.features.chat.model.toChatMessage
@@ -49,23 +51,29 @@ class ChatViewModel @Inject constructor(
         token = settings[ChatSettings.TOKEN_KEY]
         retrieveMessages()
 
-        if (api.openChat(requireNotNull(token))) {
-            api.observeIncoming()
-                .onEach {
-                    val dtoMessage = it.toDto()
-                    if (dtoMessage.username != "SYSTEM")
-                        messagesRepository.insert(dtoMessage)
-                    _state.value = state.value.copy(messages = buildList {
-                        add(dtoMessage.toChatMessage())
-                        addAll(state.value.messages)
-                    })
-                }.launchIn(viewModelScope)
+        val result = api.openChat(requireNotNull(token))
+        result.forSuccess { isActive ->
+            if (isActive) {
+                api.observeIncoming()
+                    .onEach {
+                        val dtoMessage = it.toDto()
+                        if (dtoMessage.username != "SYSTEM")
+                            messagesRepository.insert(dtoMessage)
+                        _state.value = state.value.copy(messages = buildList {
+                            add(dtoMessage.toChatMessage())
+                            addAll(state.value.messages)
+                        })
+                    }.launchIn(viewModelScope)
+            }
+        }
+        result.forError { error ->
+            _state.value = state.value.copy(chatError = error)
         }
     }
 
     override fun onEvent(event: ChatEvent) {
         viewModelScope.launch {
-            when(event) {
+            when (event) {
                 is ChatEvent.OpenChat -> openChat(event.context)
 
                 is ChatEvent.CloseChat -> api.closeChat(requireNotNull(username))
@@ -81,7 +89,11 @@ class ChatViewModel @Inject constructor(
                 }
 
                 is ChatEvent.Send -> {
-                    val message = MessageApi(requireNotNull(username), event.message, System.currentTimeMillis())
+                    val message = MessageApi(
+                        requireNotNull(username),
+                        event.message,
+                        System.currentTimeMillis()
+                    )
                     api.send(message)
                 }
 

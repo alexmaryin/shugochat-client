@@ -16,6 +16,7 @@ import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
 import io.ktor.client.features.websocket.*
+import ru.alexmaryin.shugojor.shugochat.api.NetworkStatus
 import ru.alexmaryin.shugojor.shugochat.navigation.Navigator
 import ru.alexmaryin.shugojor.shugochat.api.ShugochatApi
 import ru.alexmaryin.shugojor.shugochat.api.ShugochatApiImpl
@@ -40,7 +41,11 @@ object MainModule {
 
     @Provides
     @Singleton
-    fun provideApi(): ShugochatApi = ShugochatApiImpl(apiClient)
+    fun provideNetworkStatus(@ApplicationContext context: Context): NetworkStatus = NetworkStatus(context)
+
+    @Provides
+    @Singleton
+    fun provideApi(networkStatus: NetworkStatus): ShugochatApi = ShugochatApiImpl(apiClient, networkStatus)
 
     @Provides
     @Singleton

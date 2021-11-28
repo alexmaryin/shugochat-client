@@ -9,6 +9,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.alexmaryin.shugojor.shugochat.api.ShugochatApi
+import ru.alexmaryin.shugojor.shugochat.data.result.forError
+import ru.alexmaryin.shugojor.shugochat.data.result.forSuccess
 import ru.alexmaryin.shugojor.shugochat.dataStore
 import ru.alexmaryin.shugojor.shugochat.di.ChatSettings
 import ru.alexmaryin.shugojor.shugochat.navigation.NavTarget
@@ -28,19 +30,18 @@ class LoginViewModel @Inject constructor(
         when (event) {
 
             is LoginEvent.SignIn -> viewModelScope.launch(Dispatchers.IO) {
-                _state.value = state.value.copy(processing = true)
+                _state.value = LoginScreenState(processing = true)
                 val result = api.login(event.credentials)
-                if (result != null) {
+                result.forSuccess { token ->
                     event.context.dataStore.edit {
-                        it[ChatSettings.TOKEN_KEY] = result
+                        it[ChatSettings.TOKEN_KEY] = token
                         it[ChatSettings.USERNAME_KEY] = event.credentials.name
                     }
+                    _state.value = LoginScreenState()
                     navigator.navigateTo(NavTarget.Chat)
-                } else {
-                    _state.value = state.value.copy(
-                        processing = false,
-                        loginFail = true
-                    )
+                }
+                result.forError { error ->
+                    _state.value = LoginScreenState(loginError = error)
                 }
             }
 
