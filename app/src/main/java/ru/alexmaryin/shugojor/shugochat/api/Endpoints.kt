@@ -1,9 +1,12 @@
 package ru.alexmaryin.shugojor.shugochat.api
 
+import ru.alexmaryin.shugojor.shugochat.BuildConfig
+
 object Endpoints {
-    private const val BASE_URL = "http://192.168.0.100:8080"
-    private const val CHAT_BASE = "ws://192.168.0.100:8080"
-    const val LOGIN = "$BASE_URL/login"
-    const val REGISTER = "$BASE_URL/register"
-    const val CHAT = "$CHAT_BASE/chat"
+    private val BASE_URL = if (BuildConfig.DEBUG) "http://192.168.0.100:8080" else "https://shugojor.herokuapp.com"
+    private val CHAT_BASE = if (BuildConfig.DEBUG) "ws://192.168.0.100:8080" else "ws://shugojor.herokuapp.com"
+
+    val LOGIN = "$BASE_URL/login"
+    val REGISTER = "$BASE_URL/register"
+    val CHAT = "$CHAT_BASE/chat"
 }
